@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Webcam Stream</title>
+  </head>
+  <body>
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+    <p>
+      <img
+        id="webcamImage"
+        src=""
+        alt="Webcam Stream"
+        width="640"
+        height="480"
+      />
+    </p>
+    <script>
+      var socket = null;
+      function connect() {
+        socket = new WebSocket("ws://localhost:8080/events");
+        socket.onmessage = (event) => {
+          const imgElement = document.getElementById("webcamImage");
+          imgElement.src = "data:image/jpeg;base64," + event.data;
+        };
+      }
+
+      document.querySelector("#stop").addEventListener("click", function (e) {
+        console.warn("sending stop signal!!!");
+        socket.send("bye");
+      });
+      document.querySelector("#start").addEventListener("click", function (e) {
+        console.warn("starting websocket connection!");
+        connect();
+      });
+    </script>
+  </body>
+</html>
