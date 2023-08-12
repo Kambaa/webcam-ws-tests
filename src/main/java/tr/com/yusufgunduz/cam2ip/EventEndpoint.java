@@ -10,6 +10,69 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 class EventEndpoint extends WebSocketAdapter {
+    //    In Java, a `CountDownLatch` is a synchronization mechanism provided by the `java.util.concurrent` package that allows one or more threads to wait for a set of operations or events to complete before they can proceed. It's often used to coordinate the execution of multiple threads in a concurrent program.
+//
+//A `CountDownLatch` is initialized with a count, and threads can call the `await()` method on it to wait until the count reaches zero. Other threads can call the `countDown()` method to decrement the count. Once the count reaches zero, all waiting threads are released and can continue their execution.
+//
+//Here's a basic example to illustrate the usage of `CountDownLatch`:
+//
+//```java
+//import java.util.concurrent.CountDownLatch;
+//
+//public class CountDownLatchExample {
+//
+//    public static void main(String[] args) throws InterruptedException {
+//        int threadCount = 3;
+//        CountDownLatch latch = new CountDownLatch(threadCount);
+//
+//        for (int i = 0; i < threadCount; i++) {
+//            new Thread(new Worker(latch, i)).start();
+//        }
+//
+//        // Main thread waits until all workers are done
+//        latch.await();
+//
+//        System.out.println("All workers have completed.");
+//    }
+//
+//    static class Worker implements Runnable {
+//        private final CountDownLatch latch;
+//        private final int id;
+//
+//        Worker(CountDownLatch latch, int id) {
+//            this.latch = latch;
+//            this.id = id;
+//        }
+//
+//        @Override
+//        public void run() {
+//            System.out.println("Worker " + id + " started.");
+//            // Simulating some work
+//            try {
+//                Thread.sleep(2000);
+//            } catch (InterruptedException e) {
+//                Thread.currentThread().interrupt();
+//            }
+//            System.out.println("Worker " + id + " completed.");
+//            latch.countDown();
+//        }
+//    }
+//}
+//```
+//
+//In this example:
+//
+//1. We create a `CountDownLatch` with a count of 3, indicating that three worker threads need to complete their tasks.
+//
+//2. We create three worker threads, passing the `CountDownLatch` instance to each of them.
+//
+//3. Each worker thread simulates some work and then decrements the latch count using `countDown()`.
+//
+//4. The main thread calls `latch.await()` to wait until the count reaches zero.
+//
+//5. Once all workers are done and the count reaches zero, the main thread continues its execution.
+//
+//`CountDownLatch` is commonly used in scenarios where you have multiple threads that need to wait for a specific set of tasks to complete before proceeding, such as waiting for initialization tasks or coordinating the execution of parallel tasks.
     private final CountDownLatch closureLatch = new CountDownLatch(1);
 
 
