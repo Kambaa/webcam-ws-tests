@@ -1,38 +1,82 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <title>Webcam Stream</title>
-  </head>
-  <body>
-    <button id="start">Start</button>
-    <button id="stop">Stop</button>
-    <p>
-      <img
-        id="webcamImage"
-        src=""
-        alt="Webcam Stream"
-        width="640"
-        height="480"
-      />
-    </p>
-    <script>
-      var socket = null;
-      function connect() {
+</head>
+<body>
+<h3>Soket Bağlantısı:</h3>
+<button id="start">Başlat</button>
+<button id="stop">Durdur</button>
+<p>
+    <img
+            id="webcamImage"
+            src=""
+            alt="Webcam Stream"
+            width="640"
+            height="480"
+            style="display: none;"
+    />
+</p>
+
+<p>
+<h3>Sokete özel veri gönderin</h3>
+<label><input type="radio" name="predefbody" value="hello" checked/>hello</label>
+<label><input type="radio" name="predefbody" value="bye"/> bye</label>
+<input type="text" id="customData" placeholder="özel veri içeriği">
+<button id="send">Gönder</button>
+</p>
+<script>
+    var socket = null;
+    const imgElement = document.getElementById("webcamImage");
+
+    document.querySelectorAll('input[name="predefbody"]').forEach(radioButton => {
+        radioButton.addEventListener("change", function (e) {
+            document.querySelector('#customData').value = e.target.value;
+        })
+    });
+
+    function connect() {
         socket = new WebSocket("ws://localhost:8080/events");
         socket.onmessage = (event) => {
-          const imgElement = document.getElementById("webcamImage");
-          imgElement.src = "data:image/jpeg;base64," + event.data;
-        };
-      }
+            const imgElement = document.getElementById("webcamImage");
+            imgElement.src = "data:image/jpeg;base64," + event.data;
+            imgElement.style.display = "block";
 
-      document.querySelector("#stop").addEventListener("click", function (e) {
-        console.warn("sending stop signal!!!");
-        socket.send("bye");
-      });
-      document.querySelector("#start").addEventListener("click", function (e) {
-        console.warn("starting websocket connection!");
+        };
+        socket.onclose = (e) => {
+            console.log("soket kapama eventi fırlatıldı!")
+            imgElement.style.display = "none";
+        }
+        socket.onerror = (e) => {
+            console.log("soket hata eventi fırlatıldı!")
+        }
+    }
+
+    document.querySelector("#stop").addEventListener("click", function (e) {
+        if (socket) {
+            console.warn("Durdurma isteği gönderildi!!!");
+            socket.send("bye");
+        }
+    });
+    document.querySelector("#start").addEventListener("click", function (e) {
+        if (socket) {
+            console.warn("Arta kalmış soket bağlantısı bulundu, kaldırılıyor");
+            socket.send("bye");
+            socket = null;
+        }
+        console.warn("soket bağlantısı başlatılıyor!");
         connect();
-      });
-    </script>
-  </body>
+    });
+    document.querySelector("#send").addEventListener("click", function (e) {
+        var data = document.querySelector("#customData").value;
+        if (socket) {
+            console.warn("Soket bağlantısına özel veri gönderildiyor!");
+            socket.send(data);
+        } else {
+            alert("Önce Bağlantıyı Başlatın!")
+        }
+    });
+</script>
+</body>
 </html>

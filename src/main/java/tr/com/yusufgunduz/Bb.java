@@ -13,6 +13,8 @@ import org.eclipse.jetty.websocket.server.JettyServerUpgradeRequest;
 import org.eclipse.jetty.websocket.server.JettyServerUpgradeResponse;
 import org.eclipse.jetty.websocket.server.JettyWebSocketCreator;
 import org.eclipse.jetty.websocket.server.config.JettyWebSocketServletContainerInitializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -27,17 +29,39 @@ import java.util.concurrent.CountDownLatch;
 // ws://localhost:8080/events/
 //https://github.com/jetty-project/embedded-jetty-websocket-examples/blob/10.0.x/native-jetty-websocket-example/src/main/java/org/eclipse/jetty/demo/EventClient.java
 public class Bb {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Bb.class);
+
+
+
+
     public static void main(String[] args) throws Exception {
         Bb server = new Bb();
         server.setPort(8080);
         server.start();
         server.join();
+        LOGGER.info("Websocket server started.");
     }
 
     private final Server server;
     private final ServerConnector connector;
 
     public Bb() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         server = new Server();
         connector = new ServerConnector(server);
         server.addConnector(connector);
@@ -47,7 +71,6 @@ public class Bb {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
         server.setHandler(context);
-
         // Configure specific websocket behavior
         JettyWebSocketServletContainerInitializer.configure(context, (servletContext, wsContainer) ->
         {
@@ -57,6 +80,7 @@ public class Bb {
             // Add websockets
             wsContainer.addMapping("/events/*", new EventEndpointCreator());
         });
+
     }
 
     public void setPort(int port) {
